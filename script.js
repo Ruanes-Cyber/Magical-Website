@@ -32,25 +32,6 @@ function moveLandscape(n) {
 }
 
 // Generic slider handler for portfolio
-function moveSlider(n, type) {
-  const slider = document.querySelector(`.${type}-slider .slides`);
-  const slides = slider.querySelectorAll("img");
-
-  const isMobile = window.innerWidth <= 768;
-  const imagesPerView = isMobile ? 1 : 3;
-
-  slideIndexes[type] += n;
-
-  const maxIndex = slides.length - imagesPerView;
-  if (slideIndexes[type] < 0) {
-    slideIndexes[type] = maxIndex;
-  } else if (slideIndexes[type] > maxIndex) {
-    slideIndexes[type] = 0;
-  }
-
-  const offset = -(slideIndexes[type] * (100 / imagesPerView));
-  slider.style.transform = `translateX(${offset}%)`;
-}
 
   // Move index by group instead of individual slide
   slideIndexes[type] += n;
@@ -64,7 +45,27 @@ function moveSlider(n, type) {
   const offset = -(slideIndexes[type] * 100); // Each group takes 100% width
   slider.style.transform = `translateX(${offset}%)`;
 }
+function moveSlider(n, type) {
+  const slider = document.querySelector(`.${type}-slider .slides`);
+  const slides = slider.querySelectorAll("img");
 
+  const isMobile = window.innerWidth <= 768;
+  const imagesPerView = isMobile ? 1 : 3;
+
+  slideIndexes[type] += n;
+
+  // Clamp slideIndexes within range
+  const maxIndex = Math.ceil(slides.length / imagesPerView) - 1;
+
+  if (slideIndexes[type] < 0) {
+    slideIndexes[type] = maxIndex;
+  } else if (slideIndexes[type] > maxIndex) {
+    slideIndexes[type] = 0;
+  }
+
+  const offset = -(slideIndexes[type] * 100);
+  slider.style.transform = `translateX(${offset}%)`;
+}
 // Start the slideshow
 
 let reviewIndex = 0;
